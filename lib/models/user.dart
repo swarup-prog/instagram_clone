@@ -4,8 +4,8 @@ class User {
   final String photoUrl;
   final String username;
   final String bio;
-  final String followers;
-  final String following;
+  final List followers;
+  final List following;
 
   const User({
     required this.email,
@@ -18,9 +18,12 @@ class User {
   });
 
   Map<String, dynamic> toJson() => {
-    'username': username,
-    'uid': uid,
-    'email': email,
-
-  }
+        "username": username,
+        "uid": uid,
+        "email": email,
+        "photoUrl": photoUrl,
+        "bio": bio,
+        "followers": followers,
+        "following": following
+      };
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:instagram_clone/resources/auth_method.dart';
 import 'package:instagram_clone/utils/colors.dart';
+import 'package:instagram_clone/utils/utils.dart';
 import 'package:instagram_clone/widgets/text_field_input.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -13,6 +15,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -20,6 +23,25 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+  }
+
+  void loginUser() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    String res = await AuthMethods().loginUser(
+        email: _emailController.text, password: _passwordController.text);
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (res == "Success") {
+      //
+    } else {
+      showSnackBar(res, context);
+    }
   }
 
   @override
@@ -32,56 +54,55 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Flexible( child: Container(), flex: 2),
+              Flexible(child: Container(), flex: 2),
               // svg image
-              SvgPicture.asset('lib/images/ic_instagram.svg',
+              SvgPicture.asset(
+                'lib/images/ic_instagram.svg',
                 color: primaryColor,
                 height: 64,
               ),
-              const SizedBox(
-                  height: 64
-              ),
+              const SizedBox(height: 64),
               // TextField input for email
               TextFieldInput(
                   textEditingController: _emailController,
                   hintText: 'Enter your email',
-                  textInputType: TextInputType.emailAddress
-              ),
-              const SizedBox(
-                  height: 24
-              ),
+                  textInputType: TextInputType.emailAddress),
+              const SizedBox(height: 24),
               // TextField input for password
               TextFieldInput(
-                  textEditingController: _passwordController,
-                  hintText: 'Enter your password',
-                  textInputType: TextInputType.text,
-                  isPass: true,
+                textEditingController: _passwordController,
+                hintText: 'Enter your password',
+                textInputType: TextInputType.text,
+                isPass: true,
               ),
-              const SizedBox(
-                  height: 24
-              ),
+              const SizedBox(height: 24),
               // Button Login
               InkWell(
-                onTap: () {},
+                onTap: loginUser,
                 child: Container(
-                  child: const Text('Login'),
                   width: double.infinity,
                   alignment: Alignment.center,
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   decoration: const ShapeDecoration(
-                      shape: RoundedRectangleBorder(
+                    shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(
-                          Radius.circular(4),
-                        )
-                      ),
+                      Radius.circular(4),
+                    )),
                     color: blueColor,
                   ),
+                  child: _isLoading
+                      ? const Center(
+                          child: CircularProgressIndicator(
+                            color: primaryColor,
+                          ),
+                        )
+                      : const Text('Login'),
                 ),
               ),
               const SizedBox(
-                  height: 12,
+                height: 12,
               ),
-              Flexible( child: Container(), flex: 2),
+              Flexible(child: Container(), flex: 2),
 
               // Transitioning to signing up
               Row(
